@@ -1,5 +1,7 @@
 <p align="center">
-    <img src="mobile/assets/images/logo-mark.png" align="center" width="20%" alt="Logo do S.B.P.">
+    <!-- <img src="mobile/assets/images/logo-mark.png" align="center" width="20%" alt="Logo do S.B.P."> -->
+    <img width="20%" align="center" alt="logo-1-png" src="https://github.com/user-attachments/assets/3ad6ac40-308a-4cfd-aaa4-a5520c3e390e" />
+
 </p>
 
 <h1 align="center">S.B.P. — Smart Bus Point</h1>
@@ -39,7 +41,7 @@
 - [📦 Bibliotecas](#-bibliotecas)
 - [🌍 APIs externas](#-apis-externas)
 - [🗺️ Próximas Etapas](#️-próximas-etapas)
-- [👥 Equipe](#-equipe)
+- [👨‍💻 Desenvolvido por](#desenvolvido-por)
 
 ---
 
@@ -331,9 +333,14 @@ Smart-Bus-Point/
 - [ ] **Relatos moderados:** hoje qualquer relato aparece sem revisão; um limite de taxa por parada/dispositivo e moderação simples reduziriam spam.
 - [ ] **Previsão própria:** usar o histórico do `collector` (quando `COLLECTOR=on`) para medir a acurácia da previsão da SPTrans e, no futuro, gerar uma previsão própria.
 
-## 👥 Equipe
+<a id="desenvolvido-por"></a>
+## 👨‍💻 Desenvolvido Por
 
-| Nome | Papel |
-| :--- | :--- |
-| — | — |
-# Smart-Bus-Point-Mobile-Development
+### L.A.N.E — FIAP | Engenharia de Software
+
+Projeto acadêmico desenvolvido para a Global Solution - 2026 / 2 Semestre.
+
+| [<img src="https://avatars.githubusercontent.com/u/101829188?v=4" width=115><br><sub>Alice Santos Bulhões</sub>](https://github.com/AliceSBulhoes) |  [<img src="https://avatars.githubusercontent.com/u/163866552?v=4" width=115><br><sub>Eduardo Oliveira Cardoso Madid</sub>](https://github.com/EduardoMadid) | [<img src="https://avatars.githubusercontent.com/u/153787379?v=4" width=115><br><sub>Nicolas Haubricht Hainfellner</sub>](https://github.com/NicolasHaubricht) |  [<img src="https://avatars.githubusercontent.com/u/160745486?v=4" width=115><br><sub>Guilherme Melo</sub>](https://github.com/gmelo21)
+| :---: | :---: | :---: | :---: |
+| RM:554499 | RM:556349  | RM:556259 | RM:555310
+
