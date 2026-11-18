@@ -1,0 +1,12 @@
+node_modules/
+.env
+
+# GTFS baixado manualmente do portal da SPTrans (grande, não versiona)
+data/gtfs/*
+!data/gtfs/.gitkeep
+
+# Bancos SQLite gerados (índice GTFS, relatos, snapshots do collector)
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
