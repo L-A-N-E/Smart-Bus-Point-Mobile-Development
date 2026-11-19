@@ -432,7 +432,7 @@ Smart-Bus-Point/
 - [ ] **Previsão própria:** usar o histórico do `collector` (quando `COLLECTOR=on`) para medir a acurácia da previsão da SPTrans e, no futuro, gerar uma previsão própria.
 
 
-## 👨‍💻 Desenvolvido Por
+## 👨‍💻 Desenvolvido por
 
 ### L.A.N.E — FIAP | Engenharia de Software
 
