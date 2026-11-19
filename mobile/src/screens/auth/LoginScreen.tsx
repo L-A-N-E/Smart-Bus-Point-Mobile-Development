@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
 import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 
@@ -5,12 +6,12 @@ import { AppText, Button, Dialog, Icon, Screen, ScreenHeader, TextField } from '
 import { DEMO_EMAIL, DEMO_PASSWORD, useAuth } from '../../contexts/AuthContext';
 import { useI18n } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
-import { AuthScreenProps } from '../../navigation/types';
 import { radii, spacing } from '../../tokens';
 import { tap } from '../../utils/haptics';
 import { suggestEmail, validateEmail } from '../../utils/validation';
 
-export function LoginScreen({ navigation }: AuthScreenProps<'Login'>) {
+export function LoginScreen() {
+  const router = useRouter();
   const { signIn } = useAuth();
   const { colors } = useTheme();
   const { t } = useI18n();
@@ -52,7 +53,7 @@ export function LoginScreen({ navigation }: AuthScreenProps<'Login'>) {
 
   return (
     <Screen scroll>
-      <ScreenHeader onBack={navigation.goBack} title={t('login.title')} subtitle={t('login.subtitle')} />
+      <ScreenHeader onBack={router.back} title={t('login.title')} subtitle={t('login.subtitle')} />
 
       <TextField
         label={t('auth.email')}
@@ -142,7 +143,7 @@ export function LoginScreen({ navigation }: AuthScreenProps<'Login'>) {
         <AppText variant="body" tone="secondary">
           {t('login.noAccount')}
         </AppText>
-        <Pressable onPress={() => navigation.replace('Register')} hitSlop={8} accessibilityRole="button">
+        <Pressable onPress={() => router.replace('/(auth)/register')} hitSlop={8} accessibilityRole="button">
           <AppText variant="label" tone="primary">
             {t('login.signUp')}
           </AppText>

@@ -1,3 +1,4 @@
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { FlatList, Pressable, StyleSheet, Switch, View } from 'react-native';
 
@@ -9,15 +10,16 @@ import { usePreferences } from '../contexts/PreferencesContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useToast } from '../contexts/ToastContext';
 import { useArrivals } from '../hooks/useArrivals';
-import { RootStackScreenProps } from '../navigation/types';
 import { getRecentReports, Report } from '../services/api';
 import { isSpeaking, speak, stopSpeaking } from '../services/speech';
+import { recordStopVisit } from '../services/stopHistoryDb';
 import { spacing } from '../tokens';
 import { tap } from '../utils/haptics';
 import { formatCacheAge } from '../utils/time';
 
-export function StopDetailScreen({ route, navigation }: RootStackScreenProps<'StopDetail'>) {
-  const { code } = route.params;
+export function StopDetailScreen() {
+  const { code } = useLocalSearchParams<{ code: string }>();
+  const router = useRouter();
   const { t } = useI18n();
   const { colors } = useTheme();
   const { preferences, setPreference } = usePreferences();
@@ -33,6 +35,7 @@ export function StopDetailScreen({ route, navigation }: RootStackScreenProps<'St
   useEffect(() => {
     if (!stop) return;
     getRecentReports({ stopCode: stop.stop_code ?? code }).then(setRecentReports);
+    recordStopVisit(stop.stop_code ?? code, stop.stop_name).catch(() => {});
   }, [stop, code]);
 
   const handleFavorite = () => {
@@ -71,21 +74,20 @@ export function StopDetailScreen({ route, navigation }: RootStackScreenProps<'St
   const handleTraceRoute = () => {
     if (!stop) return;
     tap();
-    navigation.navigate('RoutePlanner', {
-      presetOrigin: { label: stop.stop_name, lat: stop.stop_lat, lng: stop.stop_lon },
-    });
+    const presetOrigin = { label: stop.stop_name, lat: stop.stop_lat, lng: stop.stop_lon };
+    router.push({ pathname: '/route-planner', params: { presetOrigin: JSON.stringify(presetOrigin) } });
   };
 
   const handleReport = () => {
     if (!stop) return;
     tap();
-    navigation.navigate('Report', { stopCode: stop.stop_code ?? code });
+    router.push({ pathname: '/report', params: { stopCode: stop.stop_code ?? code } });
   };
 
   return (
     <Screen scroll={false} padded={false}>
       <View style={[styles.header, { borderBottomColor: colors.border }]}>
-        <IconButton name="arrow-left" accessibilityLabel={t('a11y.backButton')} onPress={navigation.goBack} />
+        <IconButton name="arrow-left" accessibilityLabel={t('a11y.backButton')} onPress={router.back} />
         <View style={styles.headerText}>
           <AppText variant="h3" numberOfLines={1}>
             {headerName}

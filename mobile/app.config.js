@@ -38,6 +38,8 @@ module.exports = {
       favicon: './assets/logo-sbp.png',
     },
     plugins: [
+      ['expo-router', { root: './src/app' }],
+      'expo-sqlite',
       'expo-font',
       [
         'expo-splash-screen',

@@ -1,3 +1,4 @@
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { FlatList, Pressable, StyleSheet, Switch, View } from 'react-native';
 
@@ -7,21 +8,23 @@ import { useI18n } from '../contexts/LanguageContext';
 import { usePreferences } from '../contexts/PreferencesContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useLocation } from '../hooks/useLocation';
-import { RootStackScreenProps } from '../navigation/types';
 import { geocodeAddress, GeocodeResult, PlanRequest } from '../services/api';
 import { radii, spacing } from '../tokens';
 import { tap } from '../utils/haptics';
 
 type TimeMode = 'now' | 'departAt' | 'arriveBy';
 
-export function RoutePlannerScreen({ navigation, route }: RootStackScreenProps<'RoutePlanner'>) {
+export function RoutePlannerScreen() {
+  const { presetOrigin: presetOriginParam } = useLocalSearchParams<{ presetOrigin?: string }>();
+  const presetOrigin: RoutePoint | null = presetOriginParam ? JSON.parse(presetOriginParam) : null;
+  const router = useRouter();
   const { t } = useI18n();
   const { colors } = useTheme();
   const { preferences } = usePreferences();
   const { location } = useLocation();
 
-  const [origin, setOrigin] = useState<RoutePoint | null>(route.params?.presetOrigin ?? null);
-  const [originQuery, setOriginQuery] = useState(route.params?.presetOrigin?.label ?? '');
+  const [origin, setOrigin] = useState<RoutePoint | null>(presetOrigin);
+  const [originQuery, setOriginQuery] = useState(presetOrigin?.label ?? '');
   const [originResults, setOriginResults] = useState<GeocodeResult[]>([]);
   const [editingOrigin, setEditingOrigin] = useState(false);
 
@@ -154,10 +157,9 @@ export function RoutePlannerScreen({ navigation, route }: RootStackScreenProps<'
         lessWalking,
       };
 
-      navigation.navigate('RouteResults', {
-        request,
-        originLabel: resolvedOrigin.label,
-        destinationLabel: resolvedDestination.label,
+      router.push({
+        pathname: '/route-results',
+        params: { request: JSON.stringify(request), originLabel: resolvedOrigin.label, destinationLabel: resolvedDestination.label },
       });
     } finally {
       setSubmitting(false);
@@ -166,7 +168,7 @@ export function RoutePlannerScreen({ navigation, route }: RootStackScreenProps<'
 
   return (
     <Screen scroll>
-      <ScreenHeader onBack={navigation.goBack} title={t('planner.title')} />
+      <ScreenHeader onBack={router.back} title={t('planner.title')} />
 
       <TextField
         label={t('planner.origin')}

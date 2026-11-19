@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { FlatList, Modal, Pressable, StyleSheet, View } from 'react-native';
 
@@ -6,11 +7,11 @@ import { useI18n } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useToast } from '../contexts/ToastContext';
 import { SavedRoute, useSavedRoutes } from '../contexts/SavedRoutesContext';
-import { AppTabScreenProps } from '../navigation/types';
 import { spacing } from '../tokens';
 import { tap } from '../utils/haptics';
 
-export function SavedRoutesScreen({ navigation }: AppTabScreenProps<'Routes'>) {
+export function SavedRoutesScreen() {
+  const router = useRouter();
   const { t } = useI18n();
   const { colors } = useTheme();
   const showToast = useToast();
@@ -20,20 +21,20 @@ export function SavedRoutesScreen({ navigation }: AppTabScreenProps<'Routes'>) {
   const [renameValue, setRenameValue] = useState('');
   const [deleting, setDeleting] = useState<SavedRoute | null>(null);
 
-  const openPlanner = () => navigation.getParent()?.navigate('RoutePlanner', undefined);
+  const openPlanner = () => router.push('/route-planner');
 
   const openSavedRoute = (saved: SavedRoute) => {
     tap();
     showToast({ message: t('routes.recalculating'), icon: 'refresh' });
-    navigation.getParent()?.navigate('RouteResults', {
-      request: {
-        origin: { lat: saved.origin.lat, lng: saved.origin.lng },
-        destination: { lat: saved.destination.lat, lng: saved.destination.lng },
-        onlyAccessible: saved.preferences.onlyAccessible,
-        lessWalking: saved.preferences.lessWalking,
-      },
-      originLabel: saved.origin.label,
-      destinationLabel: saved.destination.label,
+    const request = {
+      origin: { lat: saved.origin.lat, lng: saved.origin.lng },
+      destination: { lat: saved.destination.lat, lng: saved.destination.lng },
+      onlyAccessible: saved.preferences.onlyAccessible,
+      lessWalking: saved.preferences.lessWalking,
+    };
+    router.push({
+      pathname: '/route-results',
+      params: { request: JSON.stringify(request), originLabel: saved.origin.label, destinationLabel: saved.destination.label },
     });
   };
 

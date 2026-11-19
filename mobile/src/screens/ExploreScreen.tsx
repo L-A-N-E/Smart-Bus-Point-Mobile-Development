@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 
 import { AppText, Button, Card, EmptyState, Icon, IconName, LineChip, Screen, ScreenHeader, Skeleton, TextField } from '../components';
@@ -8,8 +9,8 @@ import { useToast } from '../contexts/ToastContext';
 import { TouristSpot, TouristSpotCategory, touristSpots } from '../data/touristSpots';
 import { useLocation } from '../hooks/useLocation';
 import { useNearbyStops } from '../hooks/useNearbyStops';
-import { AppTabScreenProps } from '../navigation/types';
 import { LineResult, NearbyStop, PlanRequest, searchLines, searchStops, Stop } from '../services/api';
+import { getRecentStopVisits, StopVisit } from '../services/stopHistoryDb';
 import { spacing } from '../tokens';
 import { formatDistance } from '../utils/geo';
 
@@ -23,7 +24,8 @@ type ResultRow =
   | { kind: 'stop'; stop: Stop }
   | { kind: 'line'; line: LineResult };
 
-export function ExploreScreen({ navigation }: AppTabScreenProps<'Explore'>) {
+export function ExploreScreen() {
+  const router = useRouter();
   const { t } = useI18n();
   const { colors } = useTheme();
   const showToast = useToast();
@@ -33,6 +35,15 @@ export function ExploreScreen({ navigation }: AppTabScreenProps<'Explore'>) {
   const [searching, setSearching] = useState(false);
 
   const { stops: nearbyStops, loading: nearbyLoading, permissionDenied, error: nearbyError, refresh: refreshNearby } = useNearbyStops();
+
+  const [recentVisits, setRecentVisits] = useState<StopVisit[]>([]);
+  // Recarrega o histórico (SQLite local) sempre que a aba ganha foco — assim uma parada vista
+  // agora já aparece aqui ao voltar, sem precisar sair e reabrir o app.
+  useFocusEffect(
+    useCallback(() => {
+      getRecentStopVisits().then(setRecentVisits).catch(() => {});
+    }, []),
+  );
 
   useEffect(() => {
     const term = query.trim();
@@ -54,14 +65,17 @@ export function ExploreScreen({ navigation }: AppTabScreenProps<'Explore'>) {
     return () => clearTimeout(timer);
   }, [query]);
 
-  const openStop = (code: string) => navigation.getParent()?.navigate('StopDetail', { code });
+  const openStop = (code: string) => router.push(`/stop/${code}`);
   const openLine = (line: LineResult) =>
-    navigation.getParent()?.navigate('LineDetail', {
-      routeId: line.routeId,
-      vehiclesCode: line.vehiclesCode,
-      shortName: line.shortName ?? '?',
-      destination: line.destination ?? '',
-      origin: line.origin ?? '',
+    router.push({
+      pathname: '/line/[routeId]',
+      params: {
+        routeId: line.routeId,
+        vehiclesCode: line.vehiclesCode != null ? String(line.vehiclesCode) : '',
+        shortName: line.shortName ?? '?',
+        destination: line.destination ?? '',
+        origin: line.origin ?? '',
+      },
     });
 
   const openTouristSpot = (spot: TouristSpot) => {
@@ -70,7 +84,10 @@ export function ExploreScreen({ navigation }: AppTabScreenProps<'Explore'>) {
       return;
     }
     const request: PlanRequest = { origin: { lat: location.lat, lng: location.lng }, destination: { lat: spot.lat, lng: spot.lng } };
-    navigation.getParent()?.navigate('RouteResults', { request, originLabel: t('planner.originPlaceholder'), destinationLabel: spot.name });
+    router.push({
+      pathname: '/route-results',
+      params: { request: JSON.stringify(request), originLabel: t('planner.originPlaceholder'), destinationLabel: spot.name },
+    });
   };
 
   const showingSearch = query.trim().length >= 2;
@@ -131,6 +148,20 @@ export function ExploreScreen({ navigation }: AppTabScreenProps<'Explore'>) {
                 contentContainerStyle={styles.touristList}
                 renderItem={({ item }) => <TouristSpotCard spot={item} onPress={() => openTouristSpot(item)} />}
               />
+
+              {recentVisits.length > 0 ? (
+                <>
+                  <AppText variant="label" tone="secondary" style={styles.sectionLabel}>
+                    {t('explore.recentTitle')}
+                  </AppText>
+                  <View style={styles.recentList}>
+                    {recentVisits.map((visit) => (
+                      <HistoryStopRow key={visit.code} visit={visit} onPress={() => openStop(visit.code)} />
+                    ))}
+                  </View>
+                </>
+              ) : null}
+
               <AppText variant="label" tone="secondary" style={styles.sectionLabel}>
                 {t('explore.nearbyTitle')}
               </AppText>
@@ -165,6 +196,19 @@ function StopRow({ stop, onPress }: { stop: Stop; onPress: () => void }) {
       <Icon name="bus-stop" size={22} color={colors.primaryText} />
       <AppText variant="body" style={styles.flex} numberOfLines={1}>
         {stop.stop_name}
+      </AppText>
+      <Icon name="chevron-right" size={20} color={colors.textTertiary} />
+    </Card>
+  );
+}
+
+function HistoryStopRow({ visit, onPress }: { visit: StopVisit; onPress: () => void }) {
+  const { colors } = useTheme();
+  return (
+    <Card onPress={onPress} accessibilityLabel={visit.name} style={styles.row}>
+      <Icon name="history" size={22} color={colors.textSecondary} />
+      <AppText variant="body" style={styles.flex} numberOfLines={1}>
+        {visit.name}
       </AppText>
       <Icon name="chevron-right" size={20} color={colors.textTertiary} />
     </Card>
@@ -227,6 +271,7 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   skeletons: { gap: spacing.sm, marginTop: spacing.sm },
   touristList: { gap: spacing.sm, paddingBottom: spacing.lg },
+  recentList: { gap: spacing.sm, marginBottom: spacing.lg },
   touristCard: { width: 128, alignItems: 'flex-start', gap: spacing.xs },
   touristIcon: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', marginBottom: spacing.xs },
 });

@@ -1,3 +1,4 @@
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 
@@ -6,7 +7,6 @@ import { TranslationKey } from '../i18n';
 import { useI18n } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useToast } from '../contexts/ToastContext';
-import { RootStackScreenProps } from '../navigation/types';
 import { createReport, getRecentReports, Report } from '../services/api';
 import { radii, spacing } from '../tokens';
 import { tap } from '../utils/haptics';
@@ -30,8 +30,9 @@ function formatClock(iso: string): string {
   return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 }
 
-export function ReportScreen({ route, navigation }: RootStackScreenProps<'Report'>) {
-  const { stopCode, line } = route.params;
+export function ReportScreen() {
+  const { stopCode, line } = useLocalSearchParams<{ stopCode?: string; line?: string }>();
+  const router = useRouter();
   const { t } = useI18n();
   const { colors } = useTheme();
   const showToast = useToast();
@@ -57,7 +58,7 @@ export function ReportScreen({ route, navigation }: RootStackScreenProps<'Report
       setCrowding(null);
       setProblem(null);
       load();
-      navigation.goBack();
+      router.back();
     } finally {
       setSending(false);
     }
@@ -65,7 +66,7 @@ export function ReportScreen({ route, navigation }: RootStackScreenProps<'Report
 
   return (
     <Screen scroll>
-      <ScreenHeader onBack={navigation.goBack} title={t('report.title')} />
+      <ScreenHeader onBack={router.back} title={t('report.title')} />
 
       <AppText variant="label" style={styles.sectionLabel}>
         {t('report.crowdingTitle')}

@@ -1,3 +1,4 @@
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
@@ -6,13 +7,20 @@ import { Map, Marker, Polyline } from '../components/Map';
 import { useI18n } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useVehicles } from '../hooks/useVehicles';
-import { RootStackScreenProps } from '../navigation/types';
 import { getLineSchedule, getLineShape, ShapePoint } from '../services/api';
 import { palette, spacing } from '../tokens';
 import { tap } from '../utils/haptics';
 
-export function LineDetailScreen({ route, navigation }: RootStackScreenProps<'LineDetail'>) {
-  const { routeId, vehiclesCode, shortName, destination, origin } = route.params;
+export function LineDetailScreen() {
+  const { routeId, vehiclesCode: vehiclesCodeParam, shortName, destination, origin } = useLocalSearchParams<{
+    routeId: string;
+    vehiclesCode: string;
+    shortName: string;
+    destination: string;
+    origin: string;
+  }>();
+  const vehiclesCode = vehiclesCodeParam ? Number(vehiclesCodeParam) : null;
+  const router = useRouter();
   const { t } = useI18n();
   const { colors } = useTheme();
 
@@ -47,7 +55,7 @@ export function LineDetailScreen({ route, navigation }: RootStackScreenProps<'Li
   return (
     <Screen scroll={false} padded={false}>
       <View style={[styles.header, { borderBottomColor: colors.border }]}>
-        <IconButton name="arrow-left" accessibilityLabel={t('a11y.backButton')} onPress={navigation.goBack} />
+        <IconButton name="arrow-left" accessibilityLabel={t('a11y.backButton')} onPress={router.back} />
         <View style={styles.headerText}>
           <AppText variant="h3" numberOfLines={1}>
             {shortName}

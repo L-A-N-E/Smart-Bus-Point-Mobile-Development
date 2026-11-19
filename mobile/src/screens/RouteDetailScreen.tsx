@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useEffect, useMemo, useState } from 'react';
 import { Modal, Share, StyleSheet, View } from 'react-native';
 
 import { AppText, Button, Screen, ScreenHeader, TextField, TimelineLeg } from '../components';
@@ -9,8 +10,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { useToast } from '../contexts/ToastContext';
 import { useSavedRoutes } from '../contexts/SavedRoutesContext';
 import { useVehicles } from '../hooks/useVehicles';
-import { RootStackScreenProps } from '../navigation/types';
-import { BusLeg, StopRef } from '../services/api';
+import { BusLeg, PlanRequest, RouteOption, StopRef } from '../services/api';
 import { streetPathForWaypoints } from '../services/streetRouting';
 import { palette, radii, spacing } from '../tokens';
 import { formatCo2Saved } from '../utils/co2';
@@ -22,8 +22,16 @@ function formatClock(iso: string): string {
   return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 }
 
-export function RouteDetailScreen({ route, navigation }: RootStackScreenProps<'RouteDetail'>) {
-  const { option, request, originLabel, destinationLabel } = route.params;
+export function RouteDetailScreen() {
+  const { option: optionRaw, request: requestRaw, originLabel, destinationLabel } = useLocalSearchParams<{
+    option: string;
+    request: string;
+    originLabel: string;
+    destinationLabel: string;
+  }>();
+  const option = useMemo<RouteOption>(() => JSON.parse(optionRaw), [optionRaw]);
+  const request = useMemo<PlanRequest>(() => JSON.parse(requestRaw), [requestRaw]);
+  const router = useRouter();
   const { t } = useI18n();
   const { colors } = useTheme();
   const showToast = useToast();
@@ -56,7 +64,7 @@ export function RouteDetailScreen({ route, navigation }: RootStackScreenProps<'R
   const handleStart = () => {
     tap('medium');
     startTrip(option, originLabel, destinationLabel);
-    navigation.navigate('ActiveTrip', { option, originLabel, destinationLabel });
+    router.push({ pathname: '/active-trip', params: { option: optionRaw, originLabel, destinationLabel } });
   };
 
   // Pontos de passagem do trajeto: origem -> embarque/desembarque de cada trecho de ônibus (na
@@ -99,7 +107,7 @@ export function RouteDetailScreen({ route, navigation }: RootStackScreenProps<'R
 
   return (
     <Screen scroll>
-      <ScreenHeader onBack={navigation.goBack} title={t('detail.title')} subtitle={`${formatClock(option.departAt)} → ${formatClock(option.arriveAt)}`} />
+      <ScreenHeader onBack={router.back} title={t('detail.title')} subtitle={`${formatClock(option.departAt)} → ${formatClock(option.arriveAt)}`} />
 
       <View style={styles.mapWrap} accessible accessibilityLabel={t('a11y.map')}>
         <Map initialRegion={mapRegion} style={styles.map}>

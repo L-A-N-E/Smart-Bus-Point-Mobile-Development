@@ -1,14 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useEffect, useMemo, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 
 import { AppText, EmptyState, ErrorState, RouteOptionCard, Screen, ScreenHeader, Skeleton } from '../components';
 import { useI18n } from '../contexts/LanguageContext';
-import { RootStackScreenProps } from '../navigation/types';
-import { planRoute, RouteOption } from '../services/api';
+import { PlanRequest, planRoute, RouteOption } from '../services/api';
 import { spacing } from '../tokens';
 
-export function RouteResultsScreen({ route, navigation }: RootStackScreenProps<'RouteResults'>) {
-  const { request, originLabel, destinationLabel } = route.params;
+export function RouteResultsScreen() {
+  const { request: requestRaw, originLabel, destinationLabel } = useLocalSearchParams<{
+    request: string;
+    originLabel: string;
+    destinationLabel: string;
+  }>();
+  const request = useMemo<PlanRequest>(() => JSON.parse(requestRaw), [requestRaw]);
+  const router = useRouter();
   const { t } = useI18n();
 
   const [options, setOptions] = useState<RouteOption[]>([]);
@@ -32,7 +38,7 @@ export function RouteResultsScreen({ route, navigation }: RootStackScreenProps<'
 
   return (
     <Screen scroll={false}>
-      <ScreenHeader onBack={navigation.goBack} title={t('results.title')} subtitle={`${originLabel} → ${destinationLabel}`} />
+      <ScreenHeader onBack={router.back} title={t('results.title')} subtitle={`${originLabel} → ${destinationLabel}`} />
 
       {!gtfsImported && !loading ? (
         <View style={styles.warning}>
@@ -49,7 +55,12 @@ export function RouteResultsScreen({ route, navigation }: RootStackScreenProps<'
         renderItem={({ item }) => (
           <RouteOptionCard
             option={item}
-            onPress={() => navigation.navigate('RouteDetail', { option: item, request, originLabel, destinationLabel })}
+            onPress={() =>
+              router.push({
+                pathname: '/route-detail',
+                params: { option: JSON.stringify(item), request: requestRaw, originLabel, destinationLabel },
+              })
+            }
           />
         )}
         ListEmptyComponent={

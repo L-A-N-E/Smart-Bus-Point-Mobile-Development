@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 
@@ -10,13 +11,13 @@ import { usePreferences } from '../contexts/PreferencesContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useLocation } from '../hooks/useLocation';
 import { useNearbyStops } from '../hooks/useNearbyStops';
-import { AppTabScreenProps } from '../navigation/types';
 import { Arrival, getArrivals, getStopByCode, Stop } from '../services/api';
 import { getHourlyForecast, isRainySoon } from '../services/weather';
 import { palette, radii, spacing } from '../tokens';
 import { tap } from '../utils/haptics';
 
-export function HomeScreen({ navigation }: AppTabScreenProps<'Home'>) {
+export function HomeScreen() {
+  const router = useRouter();
   const { user } = useAuth();
   const { t } = useI18n();
   const { favoriteCodes } = useFavorites();
@@ -37,8 +38,8 @@ export function HomeScreen({ navigation }: AppTabScreenProps<'Home'>) {
       .catch(() => setRainPercent(null));
   }, [location, preferences.rainAlerts]);
 
-  const openStop = (code: string) => navigation.getParent()?.navigate('StopDetail', { code });
-  const openScanner = () => navigation.getParent()?.navigate('ScanQr');
+  const openStop = (code: string) => router.push(`/stop/${code}`);
+  const openScanner = () => router.push('/scan-qr');
 
   return (
     <Screen scroll>
@@ -82,7 +83,7 @@ export function HomeScreen({ navigation }: AppTabScreenProps<'Home'>) {
 
       <View style={styles.shortcutsRow}>
         <ShortcutButton icon="qrcode-scan" label={t('home.scanShortcut')} onPress={openScanner} />
-        <ShortcutButton icon="map-marker-radius-outline" label={t('home.nearbyShortcut')} onPress={() => navigation.navigate('Explore')} />
+        <ShortcutButton icon="map-marker-radius-outline" label={t('home.nearbyShortcut')} onPress={() => router.push('/(tabs)/explore')} />
       </View>
 
       <AppText variant="h3" style={styles.sectionTitle}>

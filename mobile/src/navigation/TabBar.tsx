@@ -1,4 +1,5 @@
-import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import { useRouter } from 'expo-router';
+import { BottomTabBarProps } from 'expo-router/js-tabs';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -7,31 +8,34 @@ import { Icon, IconName } from '../components/Icon';
 import { PressableScale } from '../components/PressableScale';
 import { useI18n } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { TranslationKey } from '../i18n';
 import { fonts, radii, shadows, sizes, spacing } from '../tokens';
 import { tap } from '../utils/haptics';
-import { AppTabParamList } from './types';
 
-const tabs: Record<keyof AppTabParamList, { icon: IconName; activeIcon: IconName }> = {
-  Home: { icon: 'home-outline', activeIcon: 'home' },
-  Routes: { icon: 'map-marker-path', activeIcon: 'map-marker-path' },
-  Explore: { icon: 'compass-outline', activeIcon: 'compass' },
-  Profile: { icon: 'account-outline', activeIcon: 'account' },
+// Nomes das rotas de arquivo em src/app/(tabs)/ (index = Home).
+type TabRouteName = 'index' | 'routes' | 'explore' | 'profile';
+
+const tabs: Record<TabRouteName, { labelKey: TranslationKey; icon: IconName; activeIcon: IconName }> = {
+  index: { labelKey: 'tabs.Home', icon: 'home-outline', activeIcon: 'home' },
+  routes: { labelKey: 'tabs.Routes', icon: 'map-marker-path', activeIcon: 'map-marker-path' },
+  explore: { labelKey: 'tabs.Explore', icon: 'compass-outline', activeIcon: 'compass' },
+  profile: { labelKey: 'tabs.Profile', icon: 'account-outline', activeIcon: 'account' },
 };
 
 // A aba "Escanear" não é uma tela da barra (o toque sempre abre o modal de QR, nunca troca de
-// aba) — por isso não está em `AppTabParamList` nem em `tabs`; é inserida visualmente no meio.
+// aba) — por isso não está em `tabs`; é inserida visualmente no meio.
 export function TabBar({ state, navigation }: BottomTabBarProps) {
   const { colors } = useTheme();
   const { t } = useI18n();
   const insets = useSafeAreaInsets();
+  const router = useRouter();
 
   const openScanner = () => {
     tap();
-    // O modal de QR vive no stack raiz (acima da barra de abas), não aqui.
-    navigation.getParent()?.navigate('ScanQr' as never);
+    router.push('/scan-qr');
   };
 
-  const routes = state.routes as (typeof state.routes[number] & { name: keyof AppTabParamList })[];
+  const routes = state.routes as (typeof state.routes[number] & { name: TabRouteName })[];
   const half = Math.ceil(routes.length / 2);
   const leftRoutes = routes.slice(0, half);
   const rightRoutes = routes.slice(half);
@@ -50,7 +54,7 @@ export function TabBar({ state, navigation }: BottomTabBarProps) {
     return (
       <TabItem
         key={route.key}
-        label={t(`tabs.${route.name}`)}
+        label={t(config.labelKey)}
         icon={config.icon}
         activeIcon={config.activeIcon}
         focused={focused}

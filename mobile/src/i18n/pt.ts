@@ -202,6 +202,7 @@ export const pt = {
   // Explorar
   'explore.searchPlaceholder': 'Busque por linha, parada ou endereço',
   'explore.nearbyTitle': 'Paradas próximas',
+  'explore.recentTitle': 'Consultadas recentemente',
   'explore.linesTitle': 'Linhas',
   'explore.stopsTitle': 'Paradas',
   'explore.noResults': 'Nada encontrado para "{query}"',

@@ -1,5 +1,6 @@
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import * as Location from 'expo-location';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { AccessibleBadge, AppText, Button, Dialog, EmptyState, Icon, Screen, ScreenHeader, StatusBadge } from '../components';
@@ -8,7 +9,6 @@ import { useAuth } from '../contexts/AuthContext';
 import { useI18n } from '../contexts/LanguageContext';
 import { usePreferences } from '../contexts/PreferencesContext';
 import { useTheme } from '../contexts/ThemeContext';
-import { RootStackScreenProps } from '../navigation/types';
 import { BusLeg, RouteOption } from '../services/api';
 import { notifyDescent } from '../services/notifications';
 import { speak } from '../services/speech';
@@ -31,8 +31,14 @@ function isBusLeg(leg: RouteOption['legs'][number]): leg is BusLeg {
 
 type Phase = 'approaching' | 'arrived' | 'waiting';
 
-export function ActiveTripScreen({ route, navigation }: RootStackScreenProps<'ActiveTrip'>) {
-  const { option, originLabel, destinationLabel } = route.params;
+export function ActiveTripScreen() {
+  const { option: optionRaw, originLabel, destinationLabel } = useLocalSearchParams<{
+    option: string;
+    originLabel: string;
+    destinationLabel: string;
+  }>();
+  const option = useMemo<RouteOption>(() => JSON.parse(optionRaw), [optionRaw]);
+  const router = useRouter();
   const { t } = useI18n();
   const { colors } = useTheme();
   const { preferences } = usePreferences();
@@ -111,7 +117,7 @@ export function ActiveTripScreen({ route, navigation }: RootStackScreenProps<'Ac
   const handleEndTrip = (completed: boolean) => {
     if (completed && user) recordCompletedTrip(user.id, option.co2SavedGrams);
     endTrip();
-    navigation.popToTop();
+    router.replace('/(tabs)');
   };
 
   const nextActionText = () => {

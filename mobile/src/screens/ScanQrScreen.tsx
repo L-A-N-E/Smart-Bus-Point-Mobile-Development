@@ -1,18 +1,19 @@
 import { CameraView, useCameraPermissions } from 'expo-camera';
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { AppText, Button, IconButton, Screen, TextField } from '../components';
 import { useI18n } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
-import { RootStackScreenProps } from '../navigation/types';
 import { radii, spacing } from '../tokens';
 import { tap } from '../utils/haptics';
 import { parseStopCode } from '../utils/qr';
 
 // Leitura de QR Code da parada. SEMPRE oferece alternativa acessível (campo de código manual),
 // mesmo com a câmera funcionando — não depende de visão para localizar uma parada.
-export function ScanQrScreen({ navigation }: RootStackScreenProps<'ScanQr'>) {
+export function ScanQrScreen() {
+  const router = useRouter();
   const { t } = useI18n();
   const { colors } = useTheme();
   const [permission, requestPermission] = useCameraPermissions();
@@ -25,7 +26,7 @@ export function ScanQrScreen({ navigation }: RootStackScreenProps<'ScanQr'>) {
     if (scanned) return;
     setScanned(true);
     tap('medium');
-    navigation.replace('StopDetail', { code });
+    router.replace(`/stop/${code}`);
   };
 
   const handleBarcodeScanned = (result: { data: string }) => {
@@ -47,7 +48,7 @@ export function ScanQrScreen({ navigation }: RootStackScreenProps<'ScanQr'>) {
     <Screen edges={['top', 'bottom']}>
       <View style={styles.header}>
         <AppText variant="h2">{t('scan.title')}</AppText>
-        <IconButton name="close" accessibilityLabel={t('a11y.closeButton')} onPress={navigation.goBack} />
+        <IconButton name="close" accessibilityLabel={t('a11y.closeButton')} onPress={router.back} />
       </View>
 
       {permission?.granted ? (

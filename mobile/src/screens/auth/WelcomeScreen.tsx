@@ -1,13 +1,14 @@
+import { useRouter } from 'expo-router';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText, Button } from '../../components';
 import { useI18n } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
-import { AuthScreenProps } from '../../navigation/types';
 import { radii, sizes, spacing } from '../../tokens';
 import { Language, languageNames, LANGUAGES } from '../../i18n';
 
-export function WelcomeScreen({ navigation }: AuthScreenProps<'Welcome'>) {
+export function WelcomeScreen() {
+  const router = useRouter();
   const { t, language, setLanguage } = useI18n();
   const { colors } = useTheme();
 
@@ -36,8 +37,8 @@ export function WelcomeScreen({ navigation }: AuthScreenProps<'Welcome'>) {
       </View>
 
       <View style={styles.actions}>
-        <Button title={t('welcome.login')} onPress={() => navigation.navigate('Login')} />
-        <Button title={t('welcome.register')} variant="outline" onPress={() => navigation.navigate('Register')} />
+        <Button title={t('welcome.login')} onPress={() => router.push('/(auth)/login')} />
+        <Button title={t('welcome.register')} variant="outline" onPress={() => router.push('/(auth)/register')} />
       </View>
     </View>
   );

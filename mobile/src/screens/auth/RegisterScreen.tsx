@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
 import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 
@@ -5,12 +6,12 @@ import { AppText, Button, Icon, PasswordStrength, Screen, ScreenHeader, TextFiel
 import { useAuth } from '../../contexts/AuthContext';
 import { useI18n } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
-import { AuthScreenProps } from '../../navigation/types';
 import { radii, spacing } from '../../tokens';
 import { tap } from '../../utils/haptics';
 import { validateEmail, validateName, validatePassword } from '../../utils/validation';
 
-export function RegisterScreen({ navigation }: AuthScreenProps<'Register'>) {
+export function RegisterScreen() {
+  const router = useRouter();
   const { signUp } = useAuth();
   const { colors } = useTheme();
   const { t } = useI18n();
@@ -51,7 +52,7 @@ export function RegisterScreen({ navigation }: AuthScreenProps<'Register'>) {
 
   return (
     <Screen scroll>
-      <ScreenHeader onBack={navigation.goBack} title={t('register.title')} subtitle={t('register.subtitle')} />
+      <ScreenHeader onBack={router.back} title={t('register.title')} subtitle={t('register.subtitle')} />
 
       <TextField
         label={t('auth.name')}
@@ -137,7 +138,7 @@ export function RegisterScreen({ navigation }: AuthScreenProps<'Register'>) {
         <AppText variant="body" tone="secondary">
           {t('register.hasAccount')}
         </AppText>
-        <Pressable onPress={() => navigation.replace('Login')} hitSlop={8} accessibilityRole="button">
+        <Pressable onPress={() => router.replace('/(auth)/login')} hitSlop={8} accessibilityRole="button">
           <AppText variant="label" tone="primary">
             {t('register.signIn')}
           </AppText>

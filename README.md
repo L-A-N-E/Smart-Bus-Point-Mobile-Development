@@ -19,6 +19,7 @@
 <p align="center">
     <img src="https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React Native">
     <img src="https://img.shields.io/badge/Expo-000020?style=for-the-badge&logo=expo&logoColor=white" alt="Expo">
+    <img src="https://img.shields.io/badge/Expo_Router-000020?style=for-the-badge&logo=expo&logoColor=white" alt="Expo Router">
     <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript">
     <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js">
     <img src="https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express">
@@ -27,9 +28,29 @@
 
 ---
 
+## 🏢 Ficha da CitizenTech
+
+| Campo | Descrição |
+| :--- | :--- |
+| **Nome** | S.B.P. — Smart Bus Point |
+| **Tema** | Smart Cities & Objetivos de Desenvolvimento Sustentável (ODS) da ONU |
+| **Disciplina** | Mobile Development & IoT |
+| **Instituição** | FIAP — Engenharia de Software |
+| **Entrega** | Global Solution 2026.2 — CitizenTech |
+| **Equipe** | L.A.N.E (ver [Desenvolvido Por](#-desenvolvido-por)) |
+| **Ecossistema proposto** | Totem físico inteligente (S.B.P. Station) + Aplicativo mobile (S.B.P. App, entregue neste repositório) + Plataforma web (S.B.P. Web) |
+| **ODS atendidos** | ODS 9 (Indústria, Inovação e Infraestrutura), ODS 10 (Redução das Desigualdades), ODS 11 (Cidades e Comunidades Sustentáveis, meta 11.2) |
+| **Problema** | Quem depende do ônibus não sabe quando ele chega nem como combinar linhas num trajeto; a falta de informação clara é uma das causas documentadas da queda de passageiros no transporte coletivo, e pesa ainda mais sobre os 14,4 milhões de brasileiros com deficiência e sobre idosos (IBGE, 2025) |
+| **Público-alvo (cidadão)** | Passageiros do cotidiano; pessoas com deficiência, idosos e mobilidade reduzida; visitantes/passageiros ocasionais; poder público, operadoras e gestores de mobilidade |
+| **Jornada do cidadão no app** | Consultar linhas/paradas (Explorar) → ver chegadas em tempo real e histórico de consultas de uma parada (Parada) → planejar e iniciar uma rota (Rotas → Planejador → Resultado → Detalhe → Viagem ativa) |
+| **Proposta de valor** | Informação de chegada e rotas em tempo real, acessível ao mesmo tempo no ponto físico, no celular e na web, com acessibilidade (física e digital) tratada como requisito de projeto, não como extra |
+| **Escopo deste repositório** | Aplicativo mobile (Expo Router + React Native + TypeScript) + backend próprio (Node/Express); o totem físico e a plataforma web fazem parte do ecossistema descrito no documento de alinhamento do produto, mas não são entregues nesta base de código |
+
+---
+
 # 📚 Sumário
 
-- [🏢 Ficha do Projeto](#-ficha-do-projeto)
+- [🏢 Ficha da CitizenTech](#-ficha-da-citizentech)
 - [📖 Escopo do Projeto](#-escopo-do-projeto)
 - [✨ Funcionalidades](#-funcionalidades)
 - [🚀 Como Executar o Projeto](#-como-executar-o-projeto)
@@ -48,22 +69,6 @@
 - [👨‍💻 Desenvolvido por](#-desenvolvido-por)
 
 ---
-
-## 🏢 Ficha do Projeto
-
-| Campo | Descrição |
-| :--- | :--- |
-| **Nome** | S.B.P. — Smart Bus Point |
-| **Tema** | Smart Cities & Objetivos de Desenvolvimento Sustentável (ODS) da ONU |
-| **Instituição** | FIAP — Engenharia de Software |
-| **Entrega** | Global Solution — 2026 / 2º semestre |
-| **Equipe** | L.A.N.E (ver [Desenvolvido Por](#desenvolvido-por)) |
-| **Ecossistema proposto** | Totem físico inteligente (S.B.P. Station) + Aplicativo mobile (S.B.P. App, entregue neste repositório) + Plataforma web (S.B.P. Web) |
-| **ODS atendidos** | ODS 9 (Indústria, Inovação e Infraestrutura), ODS 10 (Redução das Desigualdades), ODS 11 (Cidades e Comunidades Sustentáveis, meta 11.2) |
-| **Problema** | Quem depende do ônibus não sabe quando ele chega nem como combinar linhas num trajeto; a falta de informação clara é uma das causas documentadas da queda de passageiros no transporte coletivo, e pesa ainda mais sobre os 14,4 milhões de brasileiros com deficiência e sobre idosos (IBGE, 2025) |
-| **Público-alvo** | Passageiros do cotidiano; pessoas com deficiência, idosos e mobilidade reduzida; visitantes/passageiros ocasionais; poder público, operadoras e gestores de mobilidade |
-| **Proposta de valor** | Informação de chegada e rotas em tempo real, acessível ao mesmo tempo no ponto físico, no celular e na web, com acessibilidade (física e digital) tratada como requisito de projeto, não como extra |
-| **Escopo deste repositório** | Aplicativo mobile (Expo/React Native) + backend próprio (Node/Express); o totem físico e a plataforma web fazem parte do ecossistema descrito no documento de alinhamento do produto, mas não são entregues nesta base de código |
 
 ## 📖 Escopo do Projeto
 
@@ -92,7 +97,7 @@ fonte do sistema, voz) como requisito, não como extra.
 | **Autenticação** | Login/cadastro local com hash de senha (SHA-256 + salt), bloqueio após tentativas erradas, sugestão de correção de e-mail, consentimento LGPD, conta de demonstração |
 | **Início** | Saudação, atalhos (escanear, paradas próximas), paradas favoritas com próxima chegada, aviso de chuva (Open-Meteo) e resumo do status do metrô/trem |
 | **Escanear QR** | Leitura de QR Code da parada (câmera) nos formatos `sbp://parada/<código>`, `https://sbp.app/p/<código>` e código numérico isolado, com campo de código manual e lanterna — sempre com alternativa acessível |
-| **Explorar** | Busca de linhas e paradas, lista de paradas próximas por GPS, atalho para o status do metrô/trem |
+| **Explorar** | Busca de linhas e paradas, lista de paradas próximas por GPS, pontos turísticos, histórico de paradas consultadas recentemente (SQLite local no aparelho), atalho para o status do metrô/trem |
 | **Parada** | Próximas chegadas por linha com selo de confiança e idade do dado, favoritar, ler em voz alta, filtro "só acessíveis", relatos recentes, atalhos para traçar rota e relatar problema |
 | **Linha** | Mapa com o traçado (shape do GTFS), posição dos veículos ao vivo, alternância de sentido, tabela de horários programados |
 | **Rotas** | Planejador origem→destino (minha localização ou endereço geocodificado), horário "sair agora/às/chegar até", filtros de acessibilidade e menos caminhada |
@@ -165,20 +170,41 @@ vivo da Olho Vivo (quando configurada) e devolvem listas vazias/aviso onde depen
 
 ## 💾 Banco de Dados
 
-O backend usa **SQLite** (via `better-sqlite3`) como banco de dados, em dois arquivos gerados
-localmente (ambos gitignored):
+**Banco escolhido: SQLite**, local em ambas as pontas (app e backend) — sem servidor de banco
+externo, sem conta em nuvem e sem custo, o que atende ao requisito do enunciado de só usar
+ferramentas gratuitas e simplifica rodar o projeto inteiro localmente para avaliação.
+
+### No app (`mobile/`) — `expo-sqlite`
+
+O app mobile salva e recupera dados de um banco **SQLite local no próprio aparelho**, via
+`expo-sqlite`, numa camada de acesso própria (`mobile/src/services/stopHistoryDb.ts`):
+
+| Tabela | Conteúdo | Onde é usada |
+| :--- | :--- | :--- |
+| `stop_history` | Código, nome e horário da última consulta de cada parada vista pelo usuário (`code` como chave primária, upsert a cada visita) | Gravada em `StopDetailScreen` ao abrir uma parada; lida e exibida em `ExploreScreen`, na seção "Consultadas recentemente" |
+
+**Por que SQLite no app:** é o banco embarcado oficial do Expo (`expo-sqlite`), não exige servidor
+nem conta em nuvem, funciona 100% offline e já guarda justamente o tipo de dado da jornada do
+cidadão que o enunciado pede (uma informação salva e recuperada no fluxo principal) — nesse caso,
+o histórico de paradas consultadas. Para dados simples (conta, favoritos, rotas salvas, preferências,
+tema, idioma) o app continua usando `AsyncStorage` (key-value), por serem apenas chave→valor sem
+necessidade de consulta relacional.
+
+### No backend (`backend/`) — `better-sqlite3`
+
+O backend usa **SQLite** (via `better-sqlite3`) como banco de dados, em arquivos gerados localmente
+(gitignored):
 
 | Arquivo | Conteúdo |
 | :--- | :--- |
 | `backend/data/gtfs.db` | Paradas, linhas, viagens, horários, traçados e calendário importados do GTFS (`npm run gtfs:import`), indexados por parada/viagem/linha |
 | `backend/data/*.db` (collector/reports) | Relatos anônimos de lotação/problema e, quando `COLLECTOR=on`, snapshots de previsões/posições para medir depois a acurácia da SPTrans |
 
-**Por que SQLite:** o GTFS é um conjunto de dados essencialmente estático e consultado em leitura
-(paradas, linhas, horários), então um banco embarcado dispensa subir e manter um servidor de banco
-à parte — importante para um projeto acadêmico rodando localmente. `better-sqlite3` é síncrono e
-rápido o bastante para o volume de uma cidade, e o arquivo `.db` pode ser recriado a qualquer momento
-rodando `npm run gtfs:import` de novo. No app mobile, o armazenamento local (conta, favoritos, rotas
-salvas, preferências) fica no `AsyncStorage` do dispositivo — não há banco relacional no cliente.
+**Por que SQLite no backend:** o GTFS é um conjunto de dados essencialmente estático e consultado em
+leitura (paradas, linhas, horários), então um banco embarcado dispensa subir e manter um servidor de
+banco à parte — importante para um projeto acadêmico rodando localmente. `better-sqlite3` é síncrono
+e rápido o bastante para o volume de uma cidade, e o arquivo `.db` pode ser recriado a qualquer
+momento rodando `npm run gtfs:import` de novo.
 
 ## 🗺️ Dados: SPTrans, GTFS e Metrô/Trem
 
@@ -277,19 +303,26 @@ O app **nunca** chama a SPTrans, o Trilhos Agora ou o Nominatim direto: tudo pas
 
 ```
 Smart-Bus-Point/
-├── mobile/                      # App (Expo + React Native + TypeScript)
-│   ├── App.tsx                  # Providers: idioma, tema, toasts, preferências, conta, favoritos, rotas salvas, viagem ativa
+├── mobile/                      # App (Expo Router + React Native + TypeScript)
 │   └── src/
+│       ├── app/                 # Rotas (Expo Router, file-based) — cada arquivo é uma tela
+│       │   ├── _layout.tsx       #   Providers + Stack raiz (auth × autenticado, via Stack.Protected)
+│       │   ├── (auth)/           #   welcome, login, register
+│       │   ├── (tabs)/           #   _layout (Tabs + TabBar custom), index (Home), routes, explore, profile
+│       │   ├── stop/[code].tsx, line/[routeId].tsx, parada/[code].tsx, p/[code].tsx  # deep links sbp://
+│       │   └── scan-qr.tsx, route-planner.tsx, route-results.tsx, route-detail.tsx,
+│       │       active-trip.tsx, rail-status.tsx, report.tsx
 │       ├── components/          # Button, Card, TextField, Toast, Dialog, StatusBadge, ArrivalRow,
 │       │                          RouteOptionCard, TimelineLeg, TimePicker, AccessibleBadge, Map...
 │       ├── contexts/             # Auth, Theme, Language, Toast, Preferences, Favorites, SavedRoutes, ActiveTrip
 │       ├── data/                 # Fixtures do modo mock (paradas, linhas, previsões, rotas, status do metrô)
 │       ├── hooks/                 # useArrivals, useVehicles, useNearbyStops, useLocation, useReduceMotion
 │       ├── i18n/                  # Traduções (pt, en, es), tipadas a partir de pt.ts
-│       ├── navigation/             # AuthStack, RootStack, MainTabs, TabBar (botão central de QR), deep link sbp://
-│       ├── screens/                 # Auth, Home, Explore, Routes*, StopDetail, LineDetail, ScanQr, RailStatus,
-│       │                              Report, Profile (* planner, resultados, detalhe, viagem ativa)
-│       ├── services/                # api.ts (cliente do backend), weather.ts (Open-Meteo), notifications.ts, speech.ts
+│       ├── navigation/             # TabBar (botão central de QR, só a UI — a navegação em si é do Expo Router)
+│       ├── screens/                 # Componentes de tela (Auth, Home, Explore, Routes*, StopDetail, LineDetail,
+│       │                              ScanQr, RailStatus, Report, Profile), importados pelas rotas em src/app/
+│       ├── services/                # api.ts (cliente do backend), stopHistoryDb.ts (SQLite local, expo-sqlite),
+│       │                             weather.ts (Open-Meteo), notifications.ts, speech.ts
 │       ├── tokens/                   # Cores (claro/escuro/alto contraste), tipografia (Montserrat), espaçamento
 │       └── utils/                     # qr.ts (+ testes), geo.ts, co2.ts, time.ts, stats.ts, validation.ts, haptics.ts
 │
@@ -308,7 +341,7 @@ Smart-Bus-Point/
 
 | Camada | Tecnologias |
 | :--- | :--- |
-| App | React Native 0.86, Expo SDK 57, TypeScript, React Navigation 7, AsyncStorage, Jest |
+| App | React Native 0.86, Expo SDK 57, TypeScript, Expo Router (navegação por arquivos), SQLite (`expo-sqlite`) + AsyncStorage, Jest |
 | Backend | Node.js, Express 5, TypeScript (tsx), better-sqlite3, Node test runner |
 | Dados externos | API Olho Vivo (SPTrans), GTFS (SPTrans), Trilhos Agora (status metrô/trem), OpenStreetMap Nominatim, Open-Meteo |
 
@@ -319,10 +352,12 @@ Smart-Bus-Point/
 | Biblioteca | Para que é usada |
 | :--- | :--- |
 | `react-native` / `react` | Base do aplicativo |
-| `expo` | Plataforma de desenvolvimento e execução (Expo Go) |
-| `@react-navigation/native`, `native-stack`, `bottom-tabs` | Navegação em pilhas e barra de abas |
-| `react-native-screens`, `react-native-safe-area-context` | Telas nativas e áreas seguras |
-| `@react-native-async-storage/async-storage` | Armazenamento local de conta, favoritos, rotas salvas e preferências |
+| `expo` | Plataforma de desenvolvimento e execução (Expo Go / dev client) |
+| `expo-router` | Navegação por arquivos (`src/app/`) — pilhas, abas, grupos protegidos por auth, deep link `sbp://` |
+| `expo-linking`, `react-native-screens`, `react-native-safe-area-context` | Suporte do Expo Router (deep linking, telas nativas, áreas seguras) |
+| `react-native-gesture-handler`, `react-native-worklets` | Gestos e animações das transições de tela do Expo Router |
+| `expo-sqlite` | Banco SQLite local do app — histórico de paradas consultadas (`services/stopHistoryDb.ts`) |
+| `@react-native-async-storage/async-storage` | Armazenamento local (key-value) de conta, favoritos, rotas salvas e preferências |
 | `expo-crypto` | Hash SHA-256 com salt das senhas |
 | `expo-camera` | Leitura de QR Code das paradas |
 | `expo-location` | Paradas próximas e acompanhamento de GPS na viagem ativa |

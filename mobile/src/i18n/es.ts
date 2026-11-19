@@ -187,6 +187,7 @@ export const es: PtDictionary = {
 
   'explore.searchPlaceholder': 'Busca una línea, parada o dirección',
   'explore.nearbyTitle': 'Paradas cercanas',
+  'explore.recentTitle': 'Consultadas recientemente',
   'explore.linesTitle': 'Líneas',
   'explore.stopsTitle': 'Paradas',
   'explore.noResults': 'Nada encontrado para "{query}"',
