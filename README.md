@@ -322,6 +322,32 @@ Smart-Bus-Point/
 | [OpenStreetMap Nominatim](https://nominatim.org) | Geocodificação de endereços (planejador de rotas) | Não |
 | [Open-Meteo](https://open-meteo.com) | Previsão do tempo (aviso de chuva), chamada direto do app | Não |
 
+## 📱 Telas do Aplicativo
+<img width="33%" src="https://github.com/user-attachments/assets/2fdcef22-79df-4b20-91bc-8163ba3ac518" />
+<img width="33%" src="https://github.com/user-attachments/assets/6e69c01c-b719-4f65-8f7f-ea7b4b63f0da" />
+<img width="33%" src="https://github.com/user-attachments/assets/a7d2826e-1e89-4773-aa31-ad325b764b52" />
+
+<img width="33%" alt="home" src="https://github.com/user-attachments/assets/d603ffd0-d2ff-48db-b82b-91be5be0be30" />
+<img width="33%" alt="rotas" src="https://github.com/user-attachments/assets/f088432f-7ad0-475b-96f3-a82e71bd33bf" />
+<img width="33%" alt="qrcode" src="https://github.com/user-attachments/assets/e4ff6e39-5251-45d2-abf3-8a92bc3edb0d" />
+
+<img width="33%" alt="ponto" src="https://github.com/user-attachments/assets/921700ba-e17b-4497-b3e8-beffdf640038" />
+<img width="33%" alt="criar-rota" src="https://github.com/user-attachments/assets/d66e597d-5dcb-453f-aac4-927bf7a08f5b" />
+<img width="33%" alt="opcoes-rota" src="https://github.com/user-attachments/assets/ee409c61-a068-40e5-9e4c-f58387ee031f" />
+
+<img width="33%" alt="rotas" src="https://github.com/user-attachments/assets/27f8f861-82be-4350-901e-f577f0a41fef" />
+<img width="33%" alt="explorar" src="https://github.com/user-attachments/assets/48085b08-1a2f-4902-98e8-dabe26ae449b" />
+<img width="33%" alt="perfil" src="https://github.com/user-attachments/assets/e33a9443-2187-4e5c-8dbd-e1770101bf4f" />
+
+## 🎥 Demonstração em Video
+<p align="center">
+    <a href="https://youtu.be/Y730GxEuBvY" target="_blank">
+		<img width="500" src="https://github.com/user-attachments/assets/d18037c7-928e-4273-abd2-d78986a40d19" />
+    </a>
+</p>
+
+
+
 ## 🗺️ Próximas Etapas
 
 - [ ] **Banco de dados e autenticação no backend:** hoje contas, favoritos e rotas salvas ficam só no aparelho (AsyncStorage); mover login para a API (JWT) e persistir em um banco (ex.: PostgreSQL) permitiria sincronizar entre aparelhos.
