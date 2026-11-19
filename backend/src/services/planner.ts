@@ -227,6 +227,7 @@ export function createBuiltinPlanner(gtfsDb: GtfsDb, liveLookup?: LiveLookup): R
     destStops: (StopRow & { distance_m: number })[],
     requestedAt: Date,
     activeServices: Set<string> | null,
+    startedAt: number,
   ): Promise<RouteOption[]> {
     const originStopIds = originStops.map((s) => s.stop_id);
     const destStopIds = destStops.map((s) => s.stop_id);
@@ -239,11 +240,17 @@ export function createBuiltinPlanner(gtfsDb: GtfsDb, liveLookup?: LiveLookup): R
     const options: RouteOption[] = [];
 
     for (const a of routesFromOrigin) {
+      // Reavalia o orçamento de tempo a cada rota de origem — sem isso, o cap em `plan()` só vale
+      // pra decidir SE essa função roda, não quanto tempo ela pode continuar rodando depois que já
+      // começou (o cross-product origem x destino x paradas pode ser caro demais sozinho).
+      if (Date.now() - startedAt > MAX_RESPONSE_MS) break;
+
       const stopsA = gtfsDb.stopsForRoute(a.route_id, a.direction_id);
       const originOnA = stopsA.find((s) => originStopIds.includes(s.stop_id));
       if (!originOnA) continue;
 
       for (const b of routesToDest) {
+        if (Date.now() - startedAt > MAX_RESPONSE_MS) break;
         if (a.route_id === b.route_id && a.direction_id === b.direction_id) continue;
         const stopsB = gtfsDb.stopsForRoute(b.route_id, b.direction_id);
         const destOnB = stopsB.find((s) => destStopIds.includes(s.stop_id));
@@ -351,7 +358,7 @@ export function createBuiltinPlanner(gtfsDb: GtfsDb, liveLookup?: LiveLookup): R
 
       let withTransfer: RouteOption[] = [];
       if (Date.now() - startedAt < MAX_RESPONSE_MS) {
-        withTransfer = await findTransferOptions(originStops, destStops, requestedAt, activeServices);
+        withTransfer = await findTransferOptions(originStops, destStops, requestedAt, activeServices, startedAt);
       }
 
       let all = [...direct, ...withTransfer];

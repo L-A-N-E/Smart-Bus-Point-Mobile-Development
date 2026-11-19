@@ -6,6 +6,10 @@ type Entry<T> = { value: T; savedAt: number; expiresAt: number };
 
 const store = new Map<string, Entry<unknown>>();
 
+// Sem limite, uma chave nova por requisição (ex.: parâmetro de rota não validado) cresceria o Map
+// pra sempre. Map preserva ordem de inserção — ao estourar, descarta a entrada mais antiga.
+const MAX_ENTRIES = 5_000;
+
 function peek<T>(key: string): Entry<T> | undefined {
   return store.get(key) as Entry<T> | undefined;
 }
@@ -17,6 +21,10 @@ export function cacheGet<T>(key: string): T | undefined {
 }
 
 export function cacheSet<T>(key: string, value: T, ttlMs: number) {
+  if (!store.has(key) && store.size >= MAX_ENTRIES) {
+    const oldestKey = store.keys().next().value;
+    if (oldestKey !== undefined) store.delete(oldestKey);
+  }
   store.set(key, { value, savedAt: Date.now(), expiresAt: Date.now() + ttlMs });
 }
 

@@ -26,6 +26,16 @@ const nearbyQuery = z.object({
   radius: z.coerce.number().min(50).max(5000).default(600),
 });
 
+// Código de parada da SPTrans: inteiro positivo curto. Valida antes de usar como chave de cache
+// ou de repassar pra Olho Vivo — sem isso, qualquer string vira uma entrada nova no cache em
+// memória (sem limite de tamanho), um jeito barato de esgotar memória do processo.
+const stopCode = z.coerce.number().int().positive().max(999_999_999);
+
+function parseStopCode(raw: string): string | null {
+  const parsed = stopCode.safeParse(raw);
+  return parsed.success ? String(parsed.data) : null;
+}
+
 stopsRouter.get('/nearby', (req, res) => {
   const parsed = nearbyQuery.safeParse(req.query);
   if (!parsed.success) throw new BadRequest(parsed.error.issues[0]?.message ?? 'Parâmetros inválidos.');
@@ -40,7 +50,10 @@ stopsRouter.get('/search', (req, res) => {
 });
 
 stopsRouter.get('/:code', (req, res) => {
-  const stop = findStopByCode(req.params.code);
+  const code = parseStopCode(req.params.code);
+  if (!code) throw new BadRequest('Código de parada inválido.');
+
+  const stop = findStopByCode(code);
   if (!stop) {
     res.status(404).json({ error: 'Parada não encontrada.' });
     return;
@@ -49,7 +62,9 @@ stopsRouter.get('/:code', (req, res) => {
 });
 
 stopsRouter.get('/:code/arrivals', async (req, res) => {
-  const code = req.params.code;
+  const code = parseStopCode(req.params.code);
+  if (!code) throw new BadRequest('Código de parada inválido.');
+
   const onlyAccessible = req.query.onlyAccessible === 'true';
   const stop = findStopByCode(code);
 

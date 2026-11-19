@@ -24,11 +24,21 @@ export const USE_MOCK = process.env.EXPO_PUBLIC_USE_MOCK !== 'false';
 
 function discoverApiUrl(): string {
   const forced = process.env.EXPO_PUBLIC_API_URL;
-  if (forced) return forced.replace(/\/$/, '');
+  const resolved = forced
+    ? forced.replace(/\/$/, '')
+    : (() => {
+        const hostUri = Constants.expoConfig?.hostUri ?? (Constants as { expoGoConfig?: { debuggerHost?: string } }).expoGoConfig?.debuggerHost;
+        const host = hostUri?.split(':')[0];
+        return host ? `http://${host}:3333` : 'http://localhost:3333';
+      })();
 
-  const hostUri = Constants.expoConfig?.hostUri ?? (Constants as { expoGoConfig?: { debuggerHost?: string } }).expoGoConfig?.debuggerHost;
-  const host = hostUri?.split(':')[0];
-  return host ? `http://${host}:3333` : 'http://localhost:3333';
+  // `http://` só é aceitável em dev (LAN do próprio Expo, nunca a internet). Numa build de
+  // produção — onde `EXPO_PUBLIC_API_URL` poderia ter sido configurado errado pra um endpoint
+  // sem TLS — isso mandaria token de sessão e dados do usuário em texto puro pela rede.
+  if (!__DEV__ && resolved.startsWith('http://')) {
+    throw new Error(`API URL insegura em build de produção: ${resolved}. Use https://.`);
+  }
+  return resolved;
 }
 
 const API_URL = discoverApiUrl();

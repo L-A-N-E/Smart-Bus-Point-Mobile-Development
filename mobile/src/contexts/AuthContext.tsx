@@ -43,8 +43,17 @@ type Attempts = Record<string, { count: number; lockedUntil?: number }>;
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
+// expo-crypto só expõe digest de uma via (sem PBKDF2/scrypt/argon2 nativo) — encadeia várias
+// rodadas de SHA-256 pra encarecer força bruta offline, já que um hash único é instantâneo de
+// testar em GPU. Ainda não é memory-hard como scrypt/argon2; login real deve migrar pro backend.
+const HASH_ROUNDS = 10_000;
+
 async function hashPassword(password: string, salt: string) {
-  return Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, `${salt}:${password}`);
+  let digest = `${salt}:${password}`;
+  for (let i = 0; i < HASH_ROUNDS; i++) {
+    digest = await Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, digest);
+  }
+  return digest;
 }
 
 async function withPassword(user: User, password: string): Promise<StoredUser> {

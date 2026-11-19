@@ -29,9 +29,11 @@
 
 # 📚 Sumário
 
+- [🏢 Ficha do Projeto](#-ficha-do-projeto)
 - [📖 Escopo do Projeto](#-escopo-do-projeto)
 - [✨ Funcionalidades](#-funcionalidades)
 - [🚀 Como Executar o Projeto](#-como-executar-o-projeto)
+- [💾 Banco de Dados](#-banco-de-dados)
 - [🗺️ Dados: SPTrans, GTFS e Metrô/Trem](#️-dados-sptrans-gtfs-e-metrôtrem)
 - [🦽 Acessibilidade](#-acessibilidade)
 - [🔐 Contas e Segurança](#-contas-e-segurança)
@@ -40,10 +42,28 @@
 - [🧰 Tecnologias](#-tecnologias)
 - [📦 Bibliotecas](#-bibliotecas)
 - [🌍 APIs externas](#-apis-externas)
+- [📱 Telas do Aplicativo](#-telas-do-aplicativo)
+- [🎥 Demonstração em Vídeo](#-demonstração-em-video)
 - [🗺️ Próximas Etapas](#️-próximas-etapas)
-- [👨‍💻 Desenvolvido por](#desenvolvido-por)
+- [👨‍💻 Desenvolvido por](#-desenvolvido-por)
 
 ---
+
+## 🏢 Ficha do Projeto
+
+| Campo | Descrição |
+| :--- | :--- |
+| **Nome** | S.B.P. — Smart Bus Point |
+| **Tema** | Smart Cities & Objetivos de Desenvolvimento Sustentável (ODS) da ONU |
+| **Instituição** | FIAP — Engenharia de Software |
+| **Entrega** | Global Solution — 2026 / 2º semestre |
+| **Equipe** | L.A.N.E (ver [Desenvolvido Por](#desenvolvido-por)) |
+| **Ecossistema proposto** | Totem físico inteligente (S.B.P. Station) + Aplicativo mobile (S.B.P. App, entregue neste repositório) + Plataforma web (S.B.P. Web) |
+| **ODS atendidos** | ODS 9 (Indústria, Inovação e Infraestrutura), ODS 10 (Redução das Desigualdades), ODS 11 (Cidades e Comunidades Sustentáveis, meta 11.2) |
+| **Problema** | Quem depende do ônibus não sabe quando ele chega nem como combinar linhas num trajeto; a falta de informação clara é uma das causas documentadas da queda de passageiros no transporte coletivo, e pesa ainda mais sobre os 14,4 milhões de brasileiros com deficiência e sobre idosos (IBGE, 2025) |
+| **Público-alvo** | Passageiros do cotidiano; pessoas com deficiência, idosos e mobilidade reduzida; visitantes/passageiros ocasionais; poder público, operadoras e gestores de mobilidade |
+| **Proposta de valor** | Informação de chegada e rotas em tempo real, acessível ao mesmo tempo no ponto físico, no celular e na web, com acessibilidade (física e digital) tratada como requisito de projeto, não como extra |
+| **Escopo deste repositório** | Aplicativo mobile (Expo/React Native) + backend próprio (Node/Express); o totem físico e a plataforma web fazem parte do ecossistema descrito no documento de alinhamento do produto, mas não são entregues nesta base de código |
 
 ## 📖 Escopo do Projeto
 
@@ -142,6 +162,23 @@ npm test             # testes do planner (node --test via tsx), com GTFS sintét
 
 Sem o GTFS importado, `/api/stops/*` e `/api/routes/plan` continuam funcionando com os dados ao
 vivo da Olho Vivo (quando configurada) e devolvem listas vazias/aviso onde dependem do GTFS.
+
+## 💾 Banco de Dados
+
+O backend usa **SQLite** (via `better-sqlite3`) como banco de dados, em dois arquivos gerados
+localmente (ambos gitignored):
+
+| Arquivo | Conteúdo |
+| :--- | :--- |
+| `backend/data/gtfs.db` | Paradas, linhas, viagens, horários, traçados e calendário importados do GTFS (`npm run gtfs:import`), indexados por parada/viagem/linha |
+| `backend/data/*.db` (collector/reports) | Relatos anônimos de lotação/problema e, quando `COLLECTOR=on`, snapshots de previsões/posições para medir depois a acurácia da SPTrans |
+
+**Por que SQLite:** o GTFS é um conjunto de dados essencialmente estático e consultado em leitura
+(paradas, linhas, horários), então um banco embarcado dispensa subir e manter um servidor de banco
+à parte — importante para um projeto acadêmico rodando localmente. `better-sqlite3` é síncrono e
+rápido o bastante para o volume de uma cidade, e o arquivo `.db` pode ser recriado a qualquer momento
+rodando `npm run gtfs:import` de novo. No app mobile, o armazenamento local (conta, favoritos, rotas
+salvas, preferências) fica no `AsyncStorage` do dispositivo — não há banco relacional no cliente.
 
 ## 🗺️ Dados: SPTrans, GTFS e Metrô/Trem
 
@@ -359,7 +396,7 @@ Smart-Bus-Point/
 - [ ] **Relatos moderados:** hoje qualquer relato aparece sem revisão; um limite de taxa por parada/dispositivo e moderação simples reduziriam spam.
 - [ ] **Previsão própria:** usar o histórico do `collector` (quando `COLLECTOR=on`) para medir a acurácia da previsão da SPTrans e, no futuro, gerar uma previsão própria.
 
-<a id="desenvolvido-por"></a>
+
 ## 👨‍💻 Desenvolvido Por
 
 ### L.A.N.E — FIAP | Engenharia de Software
